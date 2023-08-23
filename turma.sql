@@ -1,7 +1,7 @@
 CREATE TABLE Aluno  (
     Matricula INT PRIMARY KEY NOT NULL,
     Nome VARCHAR(50) NOT NULL,
-    DataNascimento DATE NOT NULL,
+    DataNascimento DATE NOT NULL,alunoalunomatriculamatricula
     Email VARCHAR(100) 
  );
  
@@ -12,3 +12,5 @@ CREATE TABLE Aluno  (
     DataInicio DATE NOT NULL,
     FOREIGN KEY (idMatricula) REFERENCES Aluno(Matricula)
  );
+ 
+ select * from aluno;
