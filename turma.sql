@@ -1,7 +1,7 @@
 CREATE TABLE Aluno  (
     Matricula INT PRIMARY KEY NOT NULL,
     Nome VARCHAR(50) NOT NULL,
-    DataNascimento DATE NOT NULL,alunoalunomatriculamatricula
+    DataNascimento DATE NOT NULL,
     Email VARCHAR(100) 
  );
  

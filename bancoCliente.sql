@@ -1,5 +1,5 @@
 create table Cliente(
-CPFCliente int check(CPFCliente <= 11) primary key,
+CPFCliente int check(CPFCliente = 11) primary key,
 NomeCliente varchar(30) not null,
 CEP int not null,
 Telefone int not null,
@@ -21,7 +21,6 @@ TelefoneCelular int not null
 );
 
 create table Medicamento(
-
 CodMedicamento int primary key,
 NomeMedicamento varchar(50) not null,
 Fabricante varchar(50) not null,

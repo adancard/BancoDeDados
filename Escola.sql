@@ -38,7 +38,6 @@ foreign key(SiglaCurso) references Curso(SiglaCurso),
 foreign key(NroRegistroProf) references Professor(NroRegistroProf)
 );
 
-
 create table Aluno(
 CodigoTurma int not null,
 NomeAluno varchar(50) not null,
