@@ -109,39 +109,54 @@ VALUES
 	MODIFY COLUMN data_admissao DATE NOT NULL,
 	MODIFY COLUMN salario DECIMAL(10, 2) NOT NULL;
 
-		
+	
+	-- SELECT 2
+    
+    -- tarefa 1
 	select nome_depto from departamento where qtd_funcionarios_depto > 15;
     
+    -- tarefa 2
     select nome_funcionario from funcionario where salario >= 4.000;
     
+    -- tarefa 3
     select round(avg(salario),2) as Salario_Medio from funcionario;
     
+    -- tarefa 4
     select nome_funcionario from funcionario 
     where nome_funcionario like '%Silva';
     
+    -- tarefa 5
     select round(avg(salario),2) as salarioDuasCasas from funcionario;
     
+    -- tarefa 6
 	select nome_funcionario from funcionario 
     where nome_funcionario like '%Gomes';
     
+    -- tarefa 7
     select nome_funcionario,(salario*12) as Salario_Anual from funcionario;
 
+    -- tarefa 8
 	select max(salario) as Salario_Mais_alto from funcionario;
     
+    -- tarefa 9
     select salario from funcionario order by salario desc limit 2;
     
+    -- tarefa 10
     select * from funcionario;
     
+    -- tarefa 11
     select nome_funcionario, cargo, max(data_admissao) as Data_admissao from funcionario
     group by nome_funcionario, cargo
     order by data_admissao;
     
+	-- tarefa 12
    select nome_depto from departamento
    where exists (
    select 1 from funcionario 
    where( funcionario.sigla_depto = departamento.sigla_depto) and ( funcionario.salario > 5000)
 );
    
+   -- tarefa 13
    select d.nome_depto from departamento d
    where exists (
    select 1 from funcionario f where(
@@ -149,13 +164,29 @@ VALUES
    )
    );
    
+   
+   -- SUBQUERY
+   -- tarefa 1
 	select f.nome_funcionario from funcionario f
     where f.sigla_depto in (select d.nome_depto from departamento d where d.nome_depto like '%Vendas');
     
+	-- tarefa 2
     select f.nome_funcionario,f.sigla_depto from funcionario f 
     where f.codigo_funcionario in (select p.codigo_funcionario from projeto p where p.sigla_depto like '%MKT' or '%RH');
     
+	-- tarefa 3 
 	select d.nome_depto, (select sum(f.salario) from funcionario f where f.sigla_depto = d.sigla_depto) as Salario_Total from  departamento d;
     
+    -- tarefa 4
     select distinct f.nome_funcionario, f.salario from funcionario f 
     where f.sigla_depto in ( select p.sigla_depto from projeto p where p.sigla_depto like 'TI' and f.salario > (select avg(f.salario) from funcionario f)); 
+    
+    -- tarefa 5
+    select d.nome_depto, (select count(sigla_depto) from funcionario where sigla_depto = d.sigla_depto) from departamento d;
+    
+    -- tarefa 6
+	select distinct f.nome_funcionario, f.salario from funcionario f 
+	where f.sigla_depto in ( select p.sigla_depto from projeto p where p.sigla_depto like 'RH' and f.salario > (select avg(f.salario) from funcionario f)); 
+    
+    -- tarefa 7
+    select d.nome_depto, (  select group_concat(nome_funcionario) from funcionario where sigla_depto = d.sigla_depto) as Nome_Funcionarios from departamento d;
