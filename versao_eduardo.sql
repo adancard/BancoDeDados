@@ -157,5 +157,5 @@ VALUES
     
 	select d.nome_depto, (select sum(f.salario) from funcionario f where f.sigla_depto = d.sigla_depto) as Salario_Total from  departamento d;
     
-    select f.nome_funcionario from funcionario f 
-    where f.sigla_depto in ( select p.sigla_depto from projeto p where p.sigla_projeto like '&TI' ); 
+    select distinct f.nome_funcionario, f.salario from funcionario f 
+    where f.sigla_depto in ( select p.sigla_depto from projeto p where p.sigla_depto like 'TI' and f.salario > (select avg(f.salario) from funcionario f)); 
