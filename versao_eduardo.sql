@@ -114,10 +114,48 @@ VALUES
     
     select nome_funcionario from funcionario where salario >= 4.000;
     
-    select avg(salario) from funcionario;
+    select round(avg(salario),2) as Salario_Medio from funcionario;
     
     select nome_funcionario from funcionario 
     where nome_funcionario like '%Silva';
     
+    select round(avg(salario),2) as salarioDuasCasas from funcionario;
     
+	select nome_funcionario from funcionario 
+    where nome_funcionario like '%Gomes';
     
+    select nome_funcionario,(salario*12) as Salario_Anual from funcionario;
+
+	select max(salario) as Salario_Mais_alto from funcionario;
+    
+    select salario from funcionario order by salario desc limit 2;
+    
+    select * from funcionario;
+    
+    select nome_funcionario, cargo, max(data_admissao) as Data_admissao from funcionario
+    group by nome_funcionario, cargo
+    order by data_admissao;
+    
+   select nome_depto from departamento
+   where exists (
+   select 1 from funcionario 
+   where( funcionario.sigla_depto = departamento.sigla_depto) and ( funcionario.salario > 5000)
+);
+   
+   select d.nome_depto from departamento d
+   where exists (
+   select 1 from funcionario f where(
+   (f.sigla_depto = d.sigla_depto) and salario >(select avg(salario) from funcionario)
+   )
+   );
+   
+	select f.nome_funcionario from funcionario f
+    where f.sigla_depto in (select d.nome_depto from departamento d where d.nome_depto like '%Vendas');
+    
+    select f.nome_funcionario,f.sigla_depto from funcionario f 
+    where f.codigo_funcionario in (select p.codigo_funcionario from projeto p where p.sigla_depto like '%MKT' or '%RH');
+    
+	select d.nome_depto, (select sum(f.salario) from funcionario f where f.sigla_depto = d.sigla_depto) as Salario_Total from  departamento d;
+    
+    select f.nome_funcionario from funcionario f 
+    where f.sigla_depto in ( select p.sigla_depto from projeto p where p.sigla_projeto like '&TI' ); 
