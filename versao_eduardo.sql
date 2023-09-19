@@ -189,4 +189,73 @@ VALUES
 	where f.sigla_depto in ( select p.sigla_depto from projeto p where p.sigla_depto like 'RH' and f.salario > (select avg(f.salario) from funcionario f)); 
     
     -- tarefa 7
-    select d.nome_depto, (  select group_concat(nome_funcionario) from funcionario where sigla_depto = d.sigla_depto) as Nome_Funcionarios from departamento d;
+    select d.nome_depto,(select group_concat(nome_funcionario) from funcionario where sigla_depto = d.sigla_depto) as Nome_Funcionarios from departamento d;
+    
+    -- JOIN
+    
+    
+    -- tarefa 1
+	SELECT funcionario.nome_funcionario, departamento.nome_depto
+	 FROM funcionario JOIN departamento 
+	 ON funcionario.sigla_depto = departamento.sigla_depto;
+
+	-- tarefa 2
+    select projeto.nome_projeto, departamento.nome_depto
+    from projeto join departamento
+    on projeto.sigla_depto = departamento.sigla_depto;
+    
+    -- tarefa 3
+    SELECT f.nome_funcionario, p.nome_projeto
+	FROM funcionario f
+	JOIN projeto p ON f.codigo_funcionario = p.codigo_funcionario
+	JOIN departamento d ON f.sigla_depto = d.sigla_depto
+	WHERE d.nome_depto = 'Vendas';
+    
+    -- tarefa 4
+	select funcionario.nome_funcionario, projeto.nome_projeto
+    from funcionario left join projeto
+    on funcionario.codigo_funcionario = projeto.codigo_funcionario;
+    
+    -- tarefa 5
+    select departamento.nome_depto, funcionario.nome_funcionario
+    from departamento left join funcionario
+    on departamento.sigla_depto = funcionario.sigla_depto;
+    
+    -- tarefa 6
+    select projeto.nome_projeto, funcionario.nome_funcionario
+    from projeto left join funcionario
+    on projeto.codigo_funcionario = funcionario.codigo_funcionario;
+    
+    -- tarefa 7
+    select funcionario.nome_funcionario, projeto.nome_projeto
+    from funcionario right join projeto
+    on funcionario.codigo_funcionario = projeto.codigo_funcionario;
+    
+    -- tarefa 8
+    select departamento.nome_depto, funcionario.nome_funcionario
+    from departamento right join funcionario
+    on departamento.sigla_depto = funcionario.sigla_depto;
+    
+    -- tarefa 9
+    select projeto.nome_projeto, funcionario.nome_funcionario
+    from projeto right join funcionario
+    on projeto.codigo_funcionario = funcionario.codigo_funcionario;
+    
+    -- tarefa 10
+    select funcionario.nome_funcionario, projeto.nome_projeto
+    from funcionario left join projeto
+    on funcionario.codigo_funcionario = projeto.codigo_funcionario
+    union
+	select funcionario.nome_funcionario, projeto.nome_projeto
+    from funcionario right join projeto
+    on funcionario.codigo_funcionario = projeto.codigo_funcionario;
+    
+    -- tarefa 11
+    select departamento.nome_depto,count(funcionario.codigo_funcionario) as Quantidade_funcionario
+    from departamento left join funcionario
+    on departamento.sigla_depto = funcionario.sigla_depto
+    group by departamento.nome_depto
+    union
+	select funcionario.nome_funcionario,departamento.nome_depto
+    from funcionario right join departamento
+    on funcionario.sigla_depto = departamento.sigla_depto;
