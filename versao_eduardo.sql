@@ -166,6 +166,7 @@ VALUES
    
    
    -- SUBQUERY
+
    -- tarefa 1
 	select f.nome_funcionario from funcionario f
     where f.sigla_depto in (select d.nome_depto from departamento d where d.nome_depto like '%Vendas');
