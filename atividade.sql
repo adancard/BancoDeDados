@@ -11,9 +11,9 @@ constraint pk_cliente primary key(cliente_cpf)
 
 create table cliente_telefone(
 cliente_cpf varchar(11) not null,
-telefone_Celular int not null,
-telefone_Fixo int not null,
-telefone_comercial int not null,
+telefone_Celular bigint not null,
+telefone_Fixo bigint not null,
+telefone_comercial bigint not null,
 constraint fk_cliente_telefone foreign key(cliente_cpf) references cliente(cliente_cpf) on delete cascade
 );
 
@@ -24,7 +24,7 @@ cidade varchar(20) not null,
 bairro varchar(50) not null,
 rua varchar(50) not null,
 numero int not null,
-cep int not null,
+cep varchar(10) not null,
 constraint fk_cliente_endereco foreign key (cliente_cpf) references cliente(cliente_cpf) on delete cascade
 );
 
@@ -37,7 +37,7 @@ constraint pk_fabricante primary key(codigo_fabricante)
 );
 
 create table medicamento(
-codigo_medicamento int,
+codigo_medicamento varchar(10),
 nome varchar(50) not null,
 codigo_fabricante varchar(10),
 data_validade date not null,
@@ -45,15 +45,23 @@ constraint pk_medicamento primary key(codigo_medicamento),
 constraint fk_fabricante_codigo foreign key(codigo_fabricante) references fabricante(codigo_fabricante)
 );
 
+
 create table venda(
-codigo_venda int,
+codigo_venda varchar(10),
+quantidade int not null,
 data_venda date not null,
 cliente_cpf varchar(11) not null,
-codigo_medicamento int not null,
+codigo_medicamento varchar(10) not null,
 constraint pk_venda primary key(codigo_venda),
 constraint fk_venda_cliente foreign key (cliente_cpf) references cliente (cliente_cpf),
 constraint fk_venda_medicamento foreign key (codigo_medicamento) references medicamento(codigo_medicamento)
 );
+
+
+alter table cliente_endereco
+modify cep bigint;
+
+
 
 -- Inserts para Clientes
 INSERT INTO cliente (cliente_cpf, nome, email, data_nascimento)
@@ -97,21 +105,23 @@ VALUES
     ('M007', 'Losartana', 'F001', '2024-07-10'),
     ('M008', 'Metformina', 'F001', '2025-11-05');
 
+select * from cliente_endereco;
 
 -- Inserts para Endereços (cliente_endereco)
-INSERT INTO cliente_endereco (cpf_cliente, estado, cidade, bairro, rua, numero, cep)
+INSERT INTO cliente_endereco (cliente_cpf, estado, cidade, bairro, rua, numero, cep)
 VALUES
-    ('12345678901', 'SP', 'São Paulo', 'Centro', 'Rua XV de Novembro', 123, '01234-567'),
-    ('23456789012', 'RJ', 'Rio de Janeiro', 'Copacabana', 'Avenida Beira Rio', 456, '04567-890'),
-    ('34567890123', 'MG', 'Belo Horizonte', 'Savassi', 'Avenida Tiradentes', 789, '05678-901'),
-    ('45678901234', 'RS', 'Porto Alegre', 'Moinhos de Vento', 'Avenida Dom Pedro', 801, '06789-012'),
-    ('56789012345', 'PR', 'Curitiba', 'Batel', 'Rua Emiliano Costa', 202, '07890-123'),
-	('67890123456', 'SP', 'São Paulo', 'Vila Madalena', 'Rua Das Alamedas', 303, '08901-234'),
-    ('78901234567', 'SP', 'São Paulo', 'Ipiranga', 'Avenida Getulio Vargas', 585, '09012-345'),
-    ('89012345678', 'SP', 'São Paulo', 'Liberdade', 'Rua Coronel Leonidas', 757, '09123-456');
+    ('12345678901', 'SP', 'São Paulo', 'Centro', 'Rua XV de Novembro', 123, '01234567'),
+    ('23456789012', 'RJ', 'Rio de Janeiro', 'Copacabana', 'Avenida Beira Rio', 456, '04567890'),
+    ('34567890123', 'MG', 'Belo Horizonte', 'Savassi', 'Avenida Tiradentes', 789, '05678901'),
+    ('45678901234', 'RS', 'Porto Alegre', 'Moinhos de Vento', 'Avenida Dom Pedro', 801, '06789012'),
+    ('56789012345', 'PR', 'Curitiba', 'Batel', 'Rua Emiliano Costa', 202, '07890123'),
+	('67890123456', 'SP', 'São Paulo', 'Vila Madalena', 'Rua Das Alamedas', 303, '08901234'),
+    ('78901234567', 'SP', 'São Paulo', 'Ipiranga', 'Avenida Getulio Vargas', 585, '09012345'),
+    ('89012345678', 'SP', 'São Paulo', 'Liberdade', 'Rua Coronel Leonidas', 757, '09123456');
+    
 
 -- Inserts para Números de Telefone (cliente_telefone)
-INSERT INTO cliente_telefone (cpf_cliente, telefone_celular, telefone_residencial, telefone_comercial)
+INSERT INTO cliente_telefone (cliente_cpf, telefone_Celular, telefone_Fixo, telefone_comercial)
 VALUES
     ('12345678901', 1198765421, 1123456789, 1133334411),
     ('23456789012', 2199998881, 2145678901, 2112345678),
@@ -123,11 +133,36 @@ VALUES
     ('89012345678', 1199711440, 6123456789, 1133322443);
 
 -- Inserts para Vendas
-INSERT INTO venda (codigo, quantidade, data_venda, cpf_cliente, codigo_medicamento)
+INSERT INTO venda (codigo_venda, quantidade, data_venda, cliente_cpf, codigo_medicamento)
 VALUES
     ('V001', 2, '2023-01-15', '12345678901', 'M001'),
     ('V002', 3, '2023-02-20', '23456789012', 'M002'),
     ('V003', 3, '2023-02-25', '34567890123', 'M003'),
     ('V004', 3, '2023-04-30', '45678901234', 'M004'),
     ('V005', 4, '2023-02-10', '56789012345', 'M005');
-
+    
+    select * from cliente where data_Nascimento > '1990-01-01';
+    
+    select * from medicamento where year(data_validade) = 2024;
+    
+    select * from cliente where nome like '%Pessoa';
+    
+	select nome,email from cliente where year(data_Nascimento) > 2000 order by nome desc limit 5;
+    
+    select nome,cliente_cpf from cliente where cliente_cpf in(select cliente_cpf from cliente_endereco where cidade like 'São Paulo');
+    
+    select nome from cliente where cliente_cpf in (select cliente_cpf from venda where codigo_medicamento in(select codigo_medicamento from medicamento where nome like 'Paracetamol'));
+    
+	select count(codigo_medicamento)as quantidade_medicamentos from medicamento;
+    
+    select medicamento.nome, fabricante.nome_fantasia
+    from medicamento join fabricante
+    on medicamento.codigo_fabricante = fabricante.codigo_fabricante;
+    
+    select venda.data_venda,cliente.nome
+    from venda join cliente
+    on venda.cliente_cpf = cliente.cliente_cpf;
+    
+    select nome,cliente_telefone.*,cliente_endereco.* from cliente 
+    join cliente_telefone on cliente_telefone.cliente_cpf = cliente.cliente_cpf
+    join cliente_endereco on cliente_endereco.cliente_cpf = cliente.cliente_cpf;
