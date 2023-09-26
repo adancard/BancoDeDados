@@ -15,6 +15,7 @@ telefone_Celular bigint not null,
 telefone_Fixo bigint not null,
 telefone_comercial bigint not null,
 constraint fk_cliente_telefone foreign key(cliente_cpf) references cliente(cliente_cpf) on delete cascade
+on update cascade
 );
 
 create table cliente_endereco(
@@ -24,8 +25,9 @@ cidade varchar(20) not null,
 bairro varchar(50) not null,
 rua varchar(50) not null,
 numero int not null,
-cep varchar(10) not null,
-constraint fk_cliente_endereco foreign key (cliente_cpf) references cliente(cliente_cpf) on delete cascade
+cep varchar(12) not null,
+constraint fk_cliente_endereco foreign key (cliente_cpf) references cliente(cliente_cpf) on delete cascade 
+on update cascade
 );
 
 create table fabricante(
@@ -57,12 +59,6 @@ constraint fk_venda_cliente foreign key (cliente_cpf) references cliente (client
 constraint fk_venda_medicamento foreign key (codigo_medicamento) references medicamento(codigo_medicamento)
 );
 
-
-alter table cliente_endereco
-modify cep bigint;
-
-
-
 -- Inserts para Clientes
 INSERT INTO cliente (cliente_cpf, nome, email, data_nascimento)
 VALUES
@@ -76,7 +72,10 @@ VALUES
     ('89012345678', 'Ana Pessoa', 'ana@email.com', '2007-03-25'),
 	('11890023414', 'Daniel Abrantes', 'daniel@email.com', '1991-04-11'),
     ('33301034101', 'Fabio Cortes', 'fabio@email.com', '1989-01-30'),
-    ('29022345222', 'Cleber Amaral', 'camaral@email.com', '1998-09-23');
+    ('29022345222', 'Cleber Amaral', 'camaral@email.com', '1998-09-23'),
+	('12057845231', 'Amaral Cleber', 'xamaral@email.com', '2000-10-24'),
+	('21957216780', 'Joger Cleber', 'jorger@email.com', '2004-10-20');
+    
 
 -- Inserts para Fabricantes
 INSERT INTO fabricante (codigo_fabricante, nome_fantasia, razao_social, email)
@@ -91,7 +90,9 @@ VALUES
 	('F008', 'Cooperativa Farmacêutica', 'FarmH', 'coopfarma@farma.com'),
     ('F009', 'Vitta Farmacêutica', 'FarmI', 'vittafarma@farma.com'),
 	('F010', 'Vital Medical Farmacêutica', 'FarmJ', 'vmedical@farma.com'),
-	('F011', 'SANS Farmacêutica', 'FarmL', 'sansfarma@farma.com');
+	('F011', 'SANS Farmacêutica', 'FarmL', 'sansfarma@farma.com'),
+    ('F012', 'Drogaria sao carlos', 'DROG', 'droganca@farma.com'),
+    ('F013', 'Drogaria sao paulo', 'DROGS', 'drogsaop@farma.com');
 
 -- Inserts para Medicamentos
 INSERT INTO medicamento (codigo_medicamento, nome, codigo_fabricante, data_validade)
@@ -103,21 +104,22 @@ VALUES
     ('M005', 'Omeprazol', 'F005', '2024-11-30'),
     ('M006', 'Ranitidina', 'F006', '2026-08-25'),
     ('M007', 'Losartana', 'F001', '2024-07-10'),
-    ('M008', 'Metformina', 'F001', '2025-11-05');
+    ('M008', 'Metformina', 'F001', '2025-11-05'),
+	('M009', 'Dorflex', 'F007', '2028-11-05'),
+	('M010', 'Metformina', 'F002', '2023-10-05');
 
-select * from cliente_endereco;
 
 -- Inserts para Endereços (cliente_endereco)
 INSERT INTO cliente_endereco (cliente_cpf, estado, cidade, bairro, rua, numero, cep)
 VALUES
-    ('12345678901', 'SP', 'São Paulo', 'Centro', 'Rua XV de Novembro', 123, '01234567'),
-    ('23456789012', 'RJ', 'Rio de Janeiro', 'Copacabana', 'Avenida Beira Rio', 456, '04567890'),
-    ('34567890123', 'MG', 'Belo Horizonte', 'Savassi', 'Avenida Tiradentes', 789, '05678901'),
-    ('45678901234', 'RS', 'Porto Alegre', 'Moinhos de Vento', 'Avenida Dom Pedro', 801, '06789012'),
-    ('56789012345', 'PR', 'Curitiba', 'Batel', 'Rua Emiliano Costa', 202, '07890123'),
-	('67890123456', 'SP', 'São Paulo', 'Vila Madalena', 'Rua Das Alamedas', 303, '08901234'),
-    ('78901234567', 'SP', 'São Paulo', 'Ipiranga', 'Avenida Getulio Vargas', 585, '09012345'),
-    ('89012345678', 'SP', 'São Paulo', 'Liberdade', 'Rua Coronel Leonidas', 757, '09123456');
+    ('12345678901', 'SP', 'São Paulo', 'Centro', 'Rua XV de Novembro', 123, '01234-567'),
+    ('23456789012', 'RJ', 'Rio de Janeiro', 'Copacabana', 'Avenida Beira Rio', 456, '04567-890'),
+    ('34567890123', 'MG', 'Belo Horizonte', 'Savassi', 'Avenida Tiradentes', 789, '05678-901'),
+    ('45678901234', 'RS', 'Porto Alegre', 'Moinhos de Vento', 'Avenida Dom Pedro', 801, '06789-012'),
+    ('56789012345', 'PR', 'Curitiba', 'Batel', 'Rua Emiliano Costa', 202, '07890-123'),
+	('67890123456', 'SP', 'São Paulo', 'Vila Madalena', 'Rua Das Alamedas', 303, '08901-234'),
+    ('78901234567', 'SP', 'São Paulo', 'Ipiranga', 'Avenida Getulio Vargas', 585, '09012-345'),
+    ('89012345678', 'SP', 'São Paulo', 'Liberdade', 'Rua Coronel Leonidas', 757, '09123-456');
     
 
 -- Inserts para Números de Telefone (cliente_telefone)
@@ -141,6 +143,9 @@ VALUES
     ('V004', 3, '2023-04-30', '45678901234', 'M004'),
     ('V005', 4, '2023-02-10', '56789012345', 'M005');
     
+    
+    -- CONSULTAS
+    
     select * from cliente where data_Nascimento > '1990-01-01';
     
     select * from medicamento where year(data_validade) = 2024;
@@ -149,11 +154,18 @@ VALUES
     
 	select nome,email from cliente where year(data_Nascimento) > 2000 order by nome desc limit 5;
     
+    -- SUBCONSULTAS
+    
     select nome,cliente_cpf from cliente where cliente_cpf in(select cliente_cpf from cliente_endereco where cidade like 'São Paulo');
     
-    select nome from cliente where cliente_cpf in (select cliente_cpf from venda where codigo_medicamento in(select codigo_medicamento from medicamento where nome like 'Paracetamol'));
+    select nome from cliente where cliente_cpf in 
+    (select cliente_cpf from venda where codigo_medicamento in(select codigo_medicamento from medicamento where nome like 'Paracetamol'));
     
-	select count(codigo_medicamento)as quantidade_medicamentos from medicamento;
+    select nome from medicamento where year(data_validade) < 2024;
+    
+	select codigo_fabricante, count(*) as codigo_medicamento from medicamento group by codigo_fabricante;
+    
+    -- INNER JOIN
     
     select medicamento.nome, fabricante.nome_fantasia
     from medicamento join fabricante
@@ -166,3 +178,50 @@ VALUES
     select nome,cliente_telefone.*,cliente_endereco.* from cliente 
     join cliente_telefone on cliente_telefone.cliente_cpf = cliente.cliente_cpf
     join cliente_endereco on cliente_endereco.cliente_cpf = cliente.cliente_cpf;
+    
+    
+    -- LEFT JOIN
+    
+	select f.codigo_fabricante, f.nome_fantasia,email,m.nome from fabricante f left join medicamento m
+    on f.codigo_fabricante = m.codigo_fabricante order by f.codigo_fabricante;
+    
+    select c.nome, c.cliente_cpf ,cliente_endereco.*, cliente_telefone.* from cliente c 
+    left join cliente_endereco on c.cliente_cpf = cliente_endereco.cliente_cpf
+    left join cliente_telefone on c.cliente_cpf = cliente_telefone.cliente_cpf;
+
+    
+    -- RIGHT JOIN
+    
+    select m.nome, f.nome_fantasia from medicamento m right join fabricante f 
+    on m.codigo_fabricante = f.codigo_fabricante;
+    
+    select v.codigo_venda, c.nome from venda v right join cliente c 
+    on v.cliente_cpf = c.cliente_cpf;
+    
+    -- FULL JOIN
+    
+    select cliente.nome, concat(estado," ",cidade," ",bairro," ",rua," ",numero," ",cep) as endereco from cliente left join cliente_endereco on
+    cliente.cliente_cpf = cliente_endereco.cliente_cpf
+    union
+    select  cliente.nome, concat(estado," ",cidade," ",bairro," ",rua," ",numero," ",cep) as endereco from cliente right join cliente_endereco on
+    cliente.cliente_cpf = cliente_endereco.cliente_cpf;
+    
+    select cliente.nome, venda.codigo_venda from cliente left join venda on cliente.cliente_cpf = venda.cliente_cpf
+    union
+	select cliente.nome, venda.codigo_venda from cliente right join venda on cliente.cliente_cpf = venda.cliente_cpf;
+    
+    -- CROSS JOIN
+    
+    select medicamento.*, fabricante.* from medicamento cross join fabricante;
+    
+    -- SELF JOIN
+     
+    select  c1.cliente_cpf as cliente1,
+			c2.cliente_cpf as cliente2,
+            c1.cidade  as cidade
+	from cliente_endereco as c1 join cliente_endereco as c2
+    on  c1.cidade = c2.cidade
+    where c1.cliente_cpf < c2.cliente_cpf
+    
+    
+    
