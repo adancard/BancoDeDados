@@ -9,6 +9,7 @@ data_Nascimento date not null,
 constraint pk_cliente primary key(cliente_cpf)
 );
 
+
 create table cliente_telefone(
 cliente_cpf varchar(11) not null,
 telefone_Celular bigint not null,
@@ -17,6 +18,7 @@ telefone_comercial bigint not null,
 constraint fk_cliente_telefone foreign key(cliente_cpf) references cliente(cliente_cpf) on delete cascade
 on update cascade
 );
+
 
 create table cliente_endereco(
 cliente_cpf varchar(11) not null,
@@ -30,6 +32,7 @@ constraint fk_cliente_endereco foreign key (cliente_cpf) references cliente(clie
 on update cascade
 );
 
+
 create table fabricante(
 codigo_fabricante varchar(10),
 nome_fantasia varchar(80) not null,
@@ -37,6 +40,7 @@ razao_social varchar(50) not null,
 email varchar(50) not null,
 constraint pk_fabricante primary key(codigo_fabricante)
 );
+
 
 create table medicamento(
 codigo_medicamento varchar(10),
@@ -58,6 +62,7 @@ constraint pk_venda primary key(codigo_venda),
 constraint fk_venda_cliente foreign key (cliente_cpf) references cliente (cliente_cpf),
 constraint fk_venda_medicamento foreign key (codigo_medicamento) references medicamento(codigo_medicamento)
 );
+
 
 -- Inserts para Clientes
 INSERT INTO cliente (cliente_cpf, nome, email, data_nascimento)
@@ -93,6 +98,7 @@ VALUES
 	('F011', 'SANS Farmacêutica', 'FarmL', 'sansfarma@farma.com'),
     ('F012', 'Drogaria sao carlos', 'DROG', 'droganca@farma.com'),
     ('F013', 'Drogaria sao paulo', 'DROGS', 'drogsaop@farma.com');
+
 
 -- Inserts para Medicamentos
 INSERT INTO medicamento (codigo_medicamento, nome, codigo_fabricante, data_validade)
@@ -134,6 +140,7 @@ VALUES
     ('78901234567', 1199622555, 8123456789, 1133300442),
     ('89012345678', 1199711440, 6123456789, 1133322443);
 
+
 -- Inserts para Vendas
 INSERT INTO venda (codigo_venda, quantidade, data_venda, cliente_cpf, codigo_medicamento)
 VALUES
@@ -142,39 +149,56 @@ VALUES
     ('V003', 3, '2023-02-25', '34567890123', 'M003'),
     ('V004', 3, '2023-04-30', '45678901234', 'M004'),
     ('V005', 4, '2023-02-10', '56789012345', 'M005');
-    
-    
+ 
+ 
     -- CONSULTAS
     
+    -- exercicio 1
     select * from cliente where data_Nascimento > '1990-01-01';
     
+    -- exercicio 2
     select * from medicamento where year(data_validade) = 2024;
     
+    -- exercicio 3
     select * from cliente where nome like '%Pessoa';
     
+    -- exercicio 4
+    SELECT codigo_fabricante, COUNT(*) AS quantidade_de_medicamentos
+	FROM medicamento GROUP BY codigo_fabricante;
+    
+    -- exercicio 5
 	select nome,email from cliente where year(data_Nascimento) > 2000 order by nome desc limit 5;
+    
     
     -- SUBCONSULTAS
     
+    -- exercicio 6
     select nome,cliente_cpf from cliente where cliente_cpf in(select cliente_cpf from cliente_endereco where cidade like 'São Paulo');
     
+    -- exercicio 7
     select nome from cliente where cliente_cpf in 
     (select cliente_cpf from venda where codigo_medicamento in(select codigo_medicamento from medicamento where nome like 'Paracetamol'));
     
+    -- exercicio 8
     select nome from medicamento where year(data_validade) < 2024;
     
+    -- exercicio 9
 	select codigo_fabricante, count(*) as codigo_medicamento from medicamento group by codigo_fabricante;
+    
     
     -- INNER JOIN
     
+    -- exercicio 10
     select medicamento.nome, fabricante.nome_fantasia
     from medicamento join fabricante
     on medicamento.codigo_fabricante = fabricante.codigo_fabricante;
     
+    -- exercicio 11
     select venda.data_venda,cliente.nome
     from venda join cliente
     on venda.cliente_cpf = cliente.cliente_cpf;
     
+    -- exercicio 12
     select nome,cliente_telefone.*,cliente_endereco.* from cliente 
     join cliente_telefone on cliente_telefone.cliente_cpf = cliente.cliente_cpf
     join cliente_endereco on cliente_endereco.cliente_cpf = cliente.cliente_cpf;
@@ -182,9 +206,11 @@ VALUES
     
     -- LEFT JOIN
     
+    -- exercicio 13
 	select f.codigo_fabricante, f.nome_fantasia,email,m.nome from fabricante f left join medicamento m
     on f.codigo_fabricante = m.codigo_fabricante order by f.codigo_fabricante;
     
+    -- exercicio 14
     select c.nome, c.cliente_cpf ,cliente_endereco.*, cliente_telefone.* from cliente c 
     left join cliente_endereco on c.cliente_cpf = cliente_endereco.cliente_cpf
     left join cliente_telefone on c.cliente_cpf = cliente_telefone.cliente_cpf;
@@ -192,36 +218,42 @@ VALUES
     
     -- RIGHT JOIN
     
+    -- exercicio 15
     select m.nome, f.nome_fantasia from medicamento m right join fabricante f 
     on m.codigo_fabricante = f.codigo_fabricante;
     
+    -- exercicio 16
     select v.codigo_venda, c.nome from venda v right join cliente c 
     on v.cliente_cpf = c.cliente_cpf;
     
+    
     -- FULL JOIN
     
+    -- exercicio 17
     select cliente.nome, concat(estado," ",cidade," ",bairro," ",rua," ",numero," ",cep) as endereco from cliente left join cliente_endereco on
     cliente.cliente_cpf = cliente_endereco.cliente_cpf
     union
     select  cliente.nome, concat(estado," ",cidade," ",bairro," ",rua," ",numero," ",cep) as endereco from cliente right join cliente_endereco on
     cliente.cliente_cpf = cliente_endereco.cliente_cpf;
     
+    -- exercicio 18
     select cliente.nome, venda.codigo_venda from cliente left join venda on cliente.cliente_cpf = venda.cliente_cpf
     union
 	select cliente.nome, venda.codigo_venda from cliente right join venda on cliente.cliente_cpf = venda.cliente_cpf;
     
+    
     -- CROSS JOIN
     
+    -- exercicio 19
     select medicamento.*, fabricante.* from medicamento cross join fabricante;
+    
     
     -- SELF JOIN
      
+	-- exercicio 20
     select  c1.cliente_cpf as cliente1,
 			c2.cliente_cpf as cliente2,
             c1.cidade  as cidade
 	from cliente_endereco as c1 join cliente_endereco as c2
     on  c1.cidade = c2.cidade
     where c1.cliente_cpf < c2.cliente_cpf
-    
-    
-    
