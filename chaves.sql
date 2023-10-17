@@ -138,9 +138,7 @@ where codigo_disc = 2;
 
 select * from disciplina where nome_disc like '%Web%';
 
-select * from curso;
-
-select * from turma;
+select nome_curso from curso where codigo_curso in (select codigo_curso from matricula where codigo_turma in (select codigo_turma from turma where qtd_alunos_tur > 30));
 
 
 
