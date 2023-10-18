@@ -1,0 +1,4 @@
+-- criar o banco
+create database aula_hibernete_01;
+-- utilizar o banco
+use aula_hibernete_01;
