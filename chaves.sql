@@ -119,7 +119,10 @@ insert into professor(nome_prof,especialidade_prof,data_admissao_prof) values
 
 insert into matricula(codigo_curso,codigo_turma) values 
 (1,2),
-(1,2);
+(1,2),
+(6,6);
+
+
 
 insert into aula(codigo_professor,codigo_disciplina,codigo_turma,data_aula) values
 (3,1,1,'2023-10-10'),
@@ -130,15 +133,32 @@ insert into aula(codigo_professor,codigo_disciplina,codigo_turma,data_aula) valu
 (3,1,2,'2023-10-16');
 
 
+select * from curso;
+select * from matricula;
+select * from turma;
+
+-- exercicio 1
 select * from disciplina where nome_disc like '%Web%';
 
+-- exercicio 2
 Update disciplina 
 set status_disc = 0
 where codigo_disc = 2;
 
-select * from disciplina where nome_disc like '%Web%';
+-- exercicio 3
+select * from disciplina where nome_disc like '%Web%' and status_disc = 1;
 
-select nome_curso from curso where codigo_curso in (select codigo_curso from matricula where codigo_turma in (select codigo_turma from turma where qtd_alunos_tur > 30));
+-- exercicio 4
+select nome_curso,curso_status from curso where codigo_curso in
+(select codigo_curso from matricula where codigo_turma in
+(select codigo_tur from turma where qtd_alunos_tur > 30));
 
+-- exercicio 5
+Update turma 
+set status_tur = 0
+where codigo_tur = 6;
 
-
+-- exercicio 6
+select nome_curso,curso_status from curso where codigo_curso in
+(select codigo_curso from matricula where codigo_turma in
+(select codigo_tur from turma where qtd_alunos_tur > 30 and status_tur = 1));
