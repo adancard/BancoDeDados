@@ -119,10 +119,7 @@ insert into professor(nome_prof,especialidade_prof,data_admissao_prof) values
 
 insert into matricula(codigo_curso,codigo_turma) values 
 (1,2),
-(1,2),
-(6,6);
-
-
+(1,2);
 
 insert into aula(codigo_professor,codigo_disciplina,codigo_turma,data_aula) values
 (3,1,1,'2023-10-10'),
@@ -133,32 +130,49 @@ insert into aula(codigo_professor,codigo_disciplina,codigo_turma,data_aula) valu
 (3,1,2,'2023-10-16');
 
 
-select * from curso;
-select * from matricula;
-select * from turma;
-
--- exercicio 1
 select * from disciplina where nome_disc like '%Web%';
 
--- exercicio 2
 Update disciplina 
 set status_disc = 0
 where codigo_disc = 2;
 
--- exercicio 3
 select * from disciplina where nome_disc like '%Web%' and status_disc = 1;
 
--- exercicio 4
-select nome_curso,curso_status from curso where codigo_curso in
-(select codigo_curso from matricula where codigo_turma in
-(select codigo_tur from turma where qtd_alunos_tur > 30));
+select nome_curso from curso where codigo_curso in (select codigo_curso from matricula where codigo_turma in (select codigo_turma from turma where qtd_alunos_tur > 30));
 
--- exercicio 5
 Update turma 
 set status_tur = 0
 where codigo_tur = 6;
 
--- exercicio 6
-select nome_curso,curso_status from curso where codigo_curso in
-(select codigo_curso from matricula where codigo_turma in
-(select codigo_tur from turma where qtd_alunos_tur > 30 and status_tur = 1));
+create view aluno_view as select
+i.nome,
+a.email_aluno,
+m.numero_matricula
+from info_pessoais_aluno i
+join aluno a on i.cpf = a.cpf_aluno
+join matricula m on a.num_matricula_aluno = m.numero_matricula;
+
+select nome,email_aluno from aluno_view where numero_matricula = 1;
+
+select * from turma;
+
+
+create view professor_view as select
+p.nome_prof,
+d.nome_disc as nome_disciplina
+from professor p 
+join aula a on p.codigo_prof = codigo_professor
+join disciplina d on d.codigo_disc = codigo_disciplina;
+
+select distinct * from professor_view where nome_prof like 'Matheus Michilino%';
+
+
+create view matricula_view as select
+i.nome,
+t.codigo_tur
+from info_pessoais_aluno i 
+join aluno a on i.cpf = a.cpf_aluno
+join matricula m on a.num_matricula_aluno = m.numero_matricula
+join turma t on m.codigo_turma = t.codigo_tur;
+
+select count(nome) as quantidade_de_aluno_por_turma from matricula_view;
