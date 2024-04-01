@@ -19,60 +19,6 @@ CREATE TABLE aluno (
     CONSTRAINT fk_cpf_aluno FOREIGN KEY (cpf_aluno) REFERENCES info_pessoais_aluno(cpf)
 );
 
-CREATE TABLE curso (
-    codigo_curso BIGINT AUTO_INCREMENT PRIMARY KEY,
-    nome_curso VARCHAR(50) NOT NULL,
-    duracao_curso INT NOT NULL CHECK (duracao_curso >= 0),
-    curso_status BOOL DEFAULT 1
-);
-
-CREATE TABLE turma (
-    codigo_tur BIGINT AUTO_INCREMENT PRIMARY KEY,
-    qtd_alunos_tur INT NOT NULL CHECK (qtd_alunos_tur >= 0),
-    periodo_tur VARCHAR(30) NOT NULL,
-    semestre_tur VARCHAR(30) NOT NULL,
-    status_tur BOOL DEFAULT 1
-);
-
-CREATE TABLE professor (
-    codigo_prof BIGINT AUTO_INCREMENT PRIMARY KEY,
-    nome_prof VARCHAR(40) NOT NULL,
-    especialidade_prof VARCHAR(50) NOT NULL,
-    data_admissao_prof DATE NOT NULL,
-    status_prof BOOL DEFAULT 1
-);
-
-CREATE TABLE disciplina (
-    codigo_disc BIGINT AUTO_INCREMENT PRIMARY KEY,
-    nome_disc VARCHAR(50) NOT NULL,
-    ementa_disc TEXT NOT NULL,
-    status_disc BOOL DEFAULT 1
-);
-
-CREATE TABLE matricula (
-    numero_matricula BIGINT AUTO_INCREMENT,
-    codigo_curso BIGINT,
-    codigo_turma BIGINT,
-    matricula_status BOOL DEFAULT 1,
-    CONSTRAINT pk_matricula PRIMARY KEY (numero_matricula, codigo_curso, codigo_turma),
-    CONSTRAINT fk_curso_matricula FOREIGN KEY (codigo_curso) REFERENCES curso(codigo_curso),
-    CONSTRAINT fk_matricula_aluno FOREIGN KEY (numero_matricula) REFERENCES aluno(num_matricula_aluno),
-    CONSTRAINT fk_matricula_turma FOREIGN KEY (codigo_turma) REFERENCES turma(codigo_tur)
-);
-
-
-CREATE TABLE aula (
-    codigo_aula BIGINT AUTO_INCREMENT PRIMARY KEY,
-    codigo_professor BIGINT NOT NULL,
-    codigo_disciplina BIGINT NOT NULL,
-    codigo_turma BIGINT NOT NULL,
-    data_aula DATE NOT NULL,
-    status_aula BOOL DEFAULT 1,
-    CONSTRAINT fk_professor_aula FOREIGN KEY (codigo_professor) REFERENCES professor(codigo_prof),
-    CONSTRAINT fk_disciplina_aula FOREIGN KEY (codigo_disciplina) REFERENCES disciplina(codigo_disc),
-    CONSTRAINT fk_turma_aula FOREIGN KEY (codigo_turma) REFERENCES turma(codigo_tur)
-);
-
 CREATE TABLE competencia (
     id_competencia INT primary key,
     tipo ENUM ('tecnica', 'basica', 'sociemocional'),
@@ -81,13 +27,13 @@ CREATE TABLE competencia (
 );
 
 
-CREATE TABLE capacidade (
+CREATE TABLE criticas (
     id_capacidade INT AUTO_INCREMENT PRIMARY KEY,
     num_matricula_aluno_capacidade BIGINT not null,
     id_competencia int NOT NULL,
     tipo ENUM ('critica', 'desejada'),
     nome VARCHAR(100) not null,
-    nota_obtida ENUM ('sim', 'nao', 'reavaliar'),
+	Avaliado Enum('SIM','NAO','AVALIAR'),
     descricao TEXT,
 	constraint fk_aluno_capacidade foreign key (num_matricula_aluno_capacidade) references aluno (num_matricula_aluno),
     constraint fk_competencia_capacidade foreign key(id_competencia) references competencia (id_competencia)
@@ -111,68 +57,15 @@ VALUES
 ('2023-01-10', '789.123.456-04', 'marcelo11@emaileduc.com'),
 ('2023-06-01', '234.567.890-05', 'luana123@emaileduc.com');
 
-INSERT INTO disciplina (nome_disc, ementa_disc)
-VALUES
-('Programação Web para Back-End', 'Tal disciplina aborda conceitos e técnicas para desenvolvimento de aplicativos web no lado do servidor, com foco em back-end.'),
-('Programação Web para Front-End', 'Esta disciplina explora as tecnologias e práticas para desenvolvimento de aplicações web e com foco em front-end.'),
-('Interface para Dispositivos Móveis', 'A disciplina aborda projetar e desenvolver interfaces de usuário para aplicativos móveis, com foco nos princípios de design e usabilidade.'),
-('Banco de Dados', 'Tal disciplina contempla conceitos fundamentais de bancos de dados, modelagem de dados e linguagens de consulta SQL.'),
-('Redes de Computadores', 'Esta disciplina aborda conceitos introdutórios sobre redes de computadores, topologias e padrões.'),
-('Sistemas Operacionais', 'A disciplina contempla conceitos fundamentais sobre sistemas operacionais, apresentando as funcionalidades dos sistemas operacionais baseados nas plataformas Windows e Linux');
-
-INSERT INTO professor (nome_prof, especialidade_prof, data_admissao_prof)
-VALUES
-('Eduardo Nascimento', 'Tecnologia da Informação', '2023-01-15'),
-('Matheus Michilino', 'Mecatrônica e Interfaces Robóticas', '2020-01-01'),
-('Rafael Selvagio', 'Tecnologia da Informação', '2023-06-01'),
-('Rafael Rizzi', 'Eng. Elétrica', '2022-01-01');
-
-INSERT INTO curso (nome_curso, duracao_curso)
-VALUES
-('Técnico em Analise de Desenvolvimento de Sistemas', 18),
-('Técnico em Mecatrônica', 24),
-('Técnico em Eletrônica', 24),
-('Técnico em Administração', 18),
-('Técnico em Mecânica', 20);
-
-INSERT INTO turma (qtd_alunos_tur, periodo_tur, semestre_tur)
-VALUES
-(35, 'Manhã', '2 Semestre'),
-(35, 'Tarde', '2 Semestre'),
-(18, 'Manhã', '2 Semestre'),
-(20, 'Tarde', '4 Semestre'),
-(20, 'Tarde', '1 Semestre'),
-(36, 'Tarde', '2 Semestre');
-
-INSERT INTO aula (codigo_professor, codigo_disciplina, codigo_turma, data_aula)
-VALUES
-(3, 1, 1, '2023-10-10'),
-(1, 2, 2, '2023-10-11'),
-(2, 3, 1, '2023-10-12'),
-(1, 2, 1, '2023-10-13'),
-(2, 3, 2, '2023-10-15'),
-(3, 1, 2, '2023-10-16');
-
-INSERT INTO matricula (codigo_curso, codigo_turma)
-VALUES
-(1, 1),	
-(2, 2),
-(1, 3),
-(1, 4),
-(2, 1);
-
-insert into professor(nome_prof,especialidade_prof,data_admissao_prof)
-values
-('Clara Almeida','Mecatrônica','2023-06-11'),
-('João Gomes','Elêtrica','2021-10-10'),
-('Fernando da Silva','Mecânica','2023-01-01'),
-('Bento Ramos','Elêtrica','2022-02-02');
-
 insert into competencia(id_competencia,tipo,nome,descricao)
 values(2,'basica','Fazer Programa em ','O aluno soube desenvolver uma aplicação em java');
 
-insert into capacidade(num_matricula_aluno_capacidade,id_competencia,tipo,nome,nota_obtida)
-values(2,2,'desejada','desenvolver uma aplicaçao em java','sim');
+insert into capacidade(num_matricula_aluno_capacidade,id_competencia,tipo,nome,avaliado)
+values(1,2,'desejada','desenvolver uma aplicaçao em java','SIM');
+
+select nome,avaliado From capacidade where num_matricula_aluno_capacidade in(select num_matricula_aluno from aluno where num_matricula_aluno = 1);
+
+
 
 commit;
 
@@ -286,4 +179,7 @@ DELIMITER ;
 
 
 select QtdAlunoTurma(1);
+
+
+
 
